@@ -1,11 +1,21 @@
 const express = require('express');
+const dotenv = require('dotenv');
+dotenv.config({ path: './.env' });
+const globalErrorHandler = require('./controllers/errorController');
+const userRouter = require('./routes/userRouter');
+const User = require('./models/User');
+const cors = require('cors');
 
 const app = express();
 
-app.get('/', (req, res, next) => {
-  res.send('Hello World');
-});
+app.use(express.json());
+app.use(cors());
 
-app.listen(8000, () => {
-  console.log('Listening at port 8000');
+//Mount routes
+app.use('/api/v1/users', userRouter);
+
+app.use(globalErrorHandler);
+
+app.listen(3000, () => {
+  console.log('Listening at port 3000');
 });
