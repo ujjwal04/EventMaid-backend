@@ -4,6 +4,7 @@ const db = require('./../database');
 const user = db.define('user', {
   id: {
     type: sequelize.INTEGER(10),
+    autoIncrement: true,
     primaryKey: true,
   },
   name: {
@@ -18,6 +19,14 @@ const user = db.define('user', {
     allowNull: false,
     validate: {
       notNull: { msg: 'please give a valid birth date' },
+    },
+  },
+  number: {
+    type: sequelize.INTEGER(10),
+    allowNull: false,
+    unique: true,
+    validate: {
+      notNull: { msg: 'please give a valid phone number' },
     },
   },
 });

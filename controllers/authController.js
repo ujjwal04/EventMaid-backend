@@ -1,8 +1,8 @@
-//const User = require('./../models/User');
 const otpGenerator = require('otp-generator');
 const crypto = require('crypto');
 const fast2sms = require('fast-two-sms');
 
+const User = require('./../models/User');
 const AppError = require('./../utils/appError');
 
 exports.generateOtp = async (req, res, next) => {
@@ -81,17 +81,30 @@ exports.verifyOtp = async (req, res, next) => {
   });
 };
 
-// exports.signup = async (req, res, next) => {
-//   try {
-//     // 1) Check if all the incoming fields in the body are valid
-//     if (
-//       !req.body.number ||
-//       req.body.number.length != 10 ||
-//       !req.body.name ||
-//       !req.body.dob
-//     )
-//       return next(new AppError('Invalid Date', 400));
-//   } catch {
-//     next(err);
-//   }
-// };
+exports.signup = async (req, res, next) => {
+  try {
+    // 1) Check if all the incoming fields in the body are valid
+    if (
+      !req.body.number ||
+      req.body.number.toString().length != 10 ||
+      !req.body.name ||
+      !req.body.dob
+    ) {
+      return next(new AppError('Invalid Request Body', 400));
+    }
+
+    // 2) Create the new user in the db
+    const newUser = await User.create({
+      name: req.body.name,
+      dob: req.body.dob,
+      number: req.body.number,
+    });
+
+    res.status(201).json({
+      status: 'success',
+      newUser,
+    });
+  } catch {
+    next(err);
+  }
+};
