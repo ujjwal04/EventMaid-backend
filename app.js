@@ -1,9 +1,10 @@
 const express = require('express');
+const socketio = require('socket.io');
+const http = require('http');
 const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRouter');
-const User = require('./models/User');
 const cors = require('cors');
 
 const app = express();
@@ -16,6 +17,33 @@ app.use('/api/v1/users', userRouter);
 
 app.use(globalErrorHandler);
 
-app.listen(3000, () => {
+const server = http.createServer(app);
+const io = socketio(server, {
+  cors: {
+    origin: 'https://hoppscotch.io',
+    methods: ['GET', 'POST'],
+  },
+  transports: [
+    'websocket',
+    'flashsocket',
+    'htmlfile',
+    'xhr-polling',
+    'jsonp-polling',
+    'polling',
+  ],
+});
+
+io.on('connection', (socket) => {
+  console.log('We have a new connection');
+  socket.on('message', (message, callback) => {
+    console.log(message);
+  });
+  io.on('disconnect', (socket) => {
+    console.log('User had left!!');
+  });
+});
+//ws://localhost:3000/socket.io/?EIO=3&transport=websocket
+
+server.listen(3000, () => {
   console.log('Listening at port 3000');
 });
