@@ -20,7 +20,7 @@ app.use(globalErrorHandler);
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
-    origin: 'https://hoppscotch.io',
+    origin: '*',
     methods: ['GET', 'POST'],
   },
   transports: [
@@ -35,9 +35,14 @@ const io = socketio(server, {
 
 io.on('connection', (socket) => {
   console.log('We have a new connection');
-  socket.on('message', (message, callback) => {
-    console.log(message);
+
+  socket.on('join', (room) => {
+    console.log(room.id);
+    socket.on('message', (message, callback) => {
+      socket.broadcast.emit('message', { message });
+    });
   });
+
   io.on('disconnect', (socket) => {
     console.log('User had left!!');
   });
