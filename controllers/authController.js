@@ -96,7 +96,7 @@ exports.signup = async (req, res, next) => {
     // 2) Create the new user in the db
     const newUser = await User.create({
       name: req.body.name,
-      dob: req.body.dob,
+      dob: new Date(req.body.dob),
       number: req.body.number,
     });
 
@@ -104,7 +104,7 @@ exports.signup = async (req, res, next) => {
       status: 'success',
       newUser,
     });
-  } catch {
+  } catch (err) {
     next(err);
   }
 };
