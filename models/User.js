@@ -1,34 +1,25 @@
-const sequelize = require('sequelize');
-const db = require('./../database');
+const mongoose = require('mongoose');
+const DateOnly = require('mongoose-dateonly')(mongoose);
 
-const user = db.define('user', {
-  id: {
-    type: sequelize.INTEGER(10),
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  name: {
-    type: sequelize.STRING(100),
-    allowNull: false,
-    validate: {
-      notNull: { msg: 'please give a valid name' },
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Name required for user'],
+    },
+    dob: {
+      type: Date,
+      required: [true, 'DOB required for user'],
+    },
+    number: {
+      type: Number,
+      required: [true, 'Number required for user'],
+      unique: true,
     },
   },
-  dob: {
-    type: sequelize.DATEONLY,
-    allowNull: false,
-    validate: {
-      notNull: { msg: 'please give a valid birth date' },
-    },
-  },
-  number: {
-    type: sequelize.INTEGER(10),
-    allowNull: false,
-    unique: true,
-    validate: {
-      notNull: { msg: 'please give a valid phone number' },
-    },
-  },
-});
+  { timestamps: true }
+);
 
-module.exports = user;
+const User = mongoose.model('user', userSchema);
+
+module.exports = User;
