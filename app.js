@@ -55,9 +55,9 @@ io.on('connection', (socket) => {
   });
 });
 //ws://localhost:3000/socket.io/?EIO=3&transport=websocket
-
-server.listen(3000, () => {
-  console.log('Listening at port 3000');
+const PORT = process.env.port || 8080;
+server.listen(PORT, () => {
+  console.log(`Listening at port ${PORT}`);
 });
 
 module.exports = server;
