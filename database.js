@@ -1,18 +1,13 @@
-const sequelize = require('sequelize');
+const mongoose = require('mongoose');
 
-const db = new sequelize({
-  dialect: 'mysql',
-  database: process.env.db,
-  host: process.env.host,
-  username: process.env.user,
-  password: process.env.password,
-  define: { charset: 'utf8mb4', dialectOptions: { collate: 'utf8mb4_bin' } },
-});
+const DB = process.env.DB.replace('<password>', process.env.DB_PASSWORD);
 
-db.sync()
-  .then(() => {
-    console.log('DB connection successful!!');
+mongoose
+  .connect(DB, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
   })
-  .catch((err) => console.log(err));
-
-module.exports = db;
+  .then((con) => console.log('DB connection successful !!'))
+  .catch((err) => console.log('DB Connection error !!'));
