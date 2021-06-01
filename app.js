@@ -40,17 +40,13 @@ const io = socketio(server, {
 io.on('connection', (socket) => {
   socket.on('join', async (room, callback) => {
     const roomId = await userConnection.assignRoom(room);
-    socket.join(roomId);
+    socket.join(`room-${roomId}`);
     callback();
   });
 
   socket.on('message', async (message, callback) => {
-    const roomId =
-      message.from > message.to
-        ? message.from + message.to
-        : message.to + message.from;
-    await userConnection.saveMessage(roomId, message);
-    socket.to(roomId).emit('received', { message });
+    const roomId = await userConnection.saveMessage(message);
+    socket.to(`room-${roomId}`).emit('received', { message });
     callback();
   });
 
